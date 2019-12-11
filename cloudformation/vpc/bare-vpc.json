@@ -1,0 +1,18 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09", 
+    "Resources": {
+        "templateVPC" : {
+            "Type" : "AWS::EC2::VPC",
+            "Properties" : {
+                "CidrBlock" : "10.0.0.0/16",
+                "EnableDnsSupport" : "True",
+                "EnableDnsHostnames" : "True",
+                "InstanceTenancy" : "dedicated",
+                "Tags" : [
+					{"Key" : "Name", "Value" : "templateVPC"},
+					{"Key" : "Github", "Value" : "al7819"},
+					{"Key" : "Stack Overflow", "Value" : "ZeroDF"} ]
+            }
+        }
+    } 
+}
