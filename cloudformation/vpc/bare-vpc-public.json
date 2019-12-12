@@ -1,0 +1,31 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Resources": {
+        "templateVPC": {
+            "Type" : "AWS::EC2::VPC",
+            "Properties" : {
+                "CidrBlock" : "10.0.0.0/16",
+                "EnableDnsSupport" : "True",
+                "EnableDnsHostnames" : "True",
+                "InstanceTenancy" : "dedicated",
+                "Tags" : [
+                    {"Key" : "Name", "Value" : "templateVPC"},
+                    {"Key" : "Github", "Value" : "al7819"},
+                    {"Key" : "Stack Overflow", "Value" : "ZeroDF"} ]
+            }
+        },
+        "publicSubnet": {
+            "Type" : "AWS::EC2::Subnet",
+            "Properties" : {
+                    "VpcId" : {"Ref": "templateVPC"},
+                    "AvailabilityZone" : "us-east-1c",
+                    "CidrBlock" : "10.0.16.0/20",
+                    "MapPublicIpOnLaunch" : "True",
+                    "Tags" : [
+                        {"Key" : "Name", "Value" : "publicSubnet"},
+                        {"Key" : "Github", "Value" : "al7819"},
+                        {"Key" : "Stack Overflow", "Value" : "ZeroDF"} ]
+            }
+        }
+    }
+}
