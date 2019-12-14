@@ -10,8 +10,8 @@
                 "InstanceTenancy" : "default",
                 "Tags" : [
                     {"Key" : "Name", "Value" : "templateVPC"},
-                    {"Key" : "Github", "Value" : "al7819"},
-                    {"Key" : "Stack Overflow", "Value" : "ZeroDF"} ]
+                    {"Key" : "Github", "Value" : "zerodf"},
+                    {"Key" : "Stack Overflow", "Value" : "Zerodf"} ]
             }
         },
         "publicSubnet": {
@@ -23,21 +23,43 @@
                     "MapPublicIpOnLaunch" : "True",
                     "Tags" : [
                         {"Key" : "Name", "Value" : "publicSubnet"},
-                        {"Key" : "Github", "Value" : "al7819"},
-                        {"Key" : "Stack Overflow", "Value" : "ZeroDF"} ]
+                        {"Key" : "Github", "Value" : "zerodf"},
+                        {"Key" : "Stack Overflow", "Value" : "Zerodf"} ]
             }
         },
         "SSHSecurityGroup" : {
-          "Type" : "AWS::EC2::SecurityGroup",
-          "Properties" : {
+            "Type" : "AWS::EC2::SecurityGroup",
+            "Properties" : {
                 "VpcId" : { "Ref" : "templateVPC" },
                 "GroupDescription" : "Enable SSH access via port 22",
-                "SecurityGroupIngress" : [ { 
-                    "IpProtocol" : "tcp", 
-                    "FromPort" : "22", 
-                    "ToPort" : "22", 
-                    "CidrIp" : "0.0.0.0/0" } ] 
+                "SecurityGroupIngress" : [ {
+                    "IpProtocol" : "tcp",
+                    "FromPort" : "22",
+                    "ToPort" : "22",
+                    "CidrIp" : "0.0.0.0/0" } ]
           }
+        },
+        "templateInternetGateway" : {
+            "Type" : "AWS::EC2::InternetGateway",
+            "Properties" : {
+                "Tags" : [ {"Key" : "Github", "Value" : "zerodf"},
+                           {"Key" : "Stack Overflow", "Value" : "Zerodf"}]
+            }
+        },
+        "AttachGateway" : {
+            "Type" : "AWS::EC2::VPCGatewayAttachment",
+            "Properties" : {
+                "VpcId" : { "Ref" : "templateVPC" },
+                "InternetGatewayId" : { "Ref" : "templateInternetGateway" }
+            }
+        },
+        "templateRouteTable" : {
+            "Type" : "AWS::EC2::RouteTable",
+            "Properties" : {
+                "VpcId" : { "Ref" : "templateVPC" },
+                "Tags" : [
+                    {"Key" : "Name", "Value" : "Main Route Table"} ]
+            }
         }
-    }
+   }
 }
