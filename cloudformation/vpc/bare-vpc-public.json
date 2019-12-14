@@ -7,7 +7,7 @@
                 "CidrBlock" : "10.0.0.0/16",
                 "EnableDnsSupport" : "True",
                 "EnableDnsHostnames" : "True",
-                "InstanceTenancy" : "dedicated",
+                "InstanceTenancy" : "default",
                 "Tags" : [
                     {"Key" : "Name", "Value" : "templateVPC"},
                     {"Key" : "Github", "Value" : "al7819"},
@@ -26,6 +26,18 @@
                         {"Key" : "Github", "Value" : "al7819"},
                         {"Key" : "Stack Overflow", "Value" : "ZeroDF"} ]
             }
+        },
+        "SSHSecurityGroup" : {
+          "Type" : "AWS::EC2::SecurityGroup",
+          "Properties" : {
+                "VpcId" : { "Ref" : "templateVPC" },
+                "GroupDescription" : "Enable SSH access via port 22",
+                "SecurityGroupIngress" : [ { 
+                    "IpProtocol" : "tcp", 
+                    "FromPort" : "22", 
+                    "ToPort" : "22", 
+                    "CidrIp" : "0.0.0.0/0" } ] 
+          }
         }
     }
 }
