@@ -11,7 +11,7 @@
                 "Tags" : [
                     {"Key" : "Name", "Value" : "templateVPC"},
                     {"Key" : "Github", "Value" : "zerodf"},
-                    {"Key" : "Stack Overflow", "Value" : "Zerodf"} ]
+                    {"Key" : "Stack Overflow", "Value" : "ZeroDF"} ]
             }
         },
         "publicSubnet": {
@@ -24,7 +24,7 @@
                     "Tags" : [
                         {"Key" : "Name", "Value" : "publicSubnet"},
                         {"Key" : "Github", "Value" : "zerodf"},
-                        {"Key" : "Stack Overflow", "Value" : "Zerodf"} ]
+                        {"Key" : "Stack Overflow", "Value" : "ZeroDF"} ]
             }
         },
         "SSHSecurityGroup" : {
@@ -58,8 +58,23 @@
             "Properties" : {
                 "VpcId" : { "Ref" : "templateVPC" },
                 "Tags" : [
-                    {"Key" : "Name", "Value" : "Main Route Table"} ]
+                    {"Key" : "Name", "Value" : "Default Route Table"} ]
+            }
+        },
+        "defaultRoute" : {
+            "Type" : "AWS::EC2::Route",
+            "Properties" : {
+                "DestinationCidrBlock" : "0.0.0.0/0",
+                "GatewayId" : { "Ref": "templateInternetGateway" },
+                "RouteTableId" : { "Ref": "templateRouteTable" }
+            }
+        },
+        "defaultRouteTablePublicSubnetAssociation": {
+            "Type" : "AWS::EC2::SubnetRouteTableAssociation",
+            "Properties" : {
+                "RouteTableId" : { "Ref": "templateRouteTable" },
+                "SubnetId" : { "Ref": "publicSubnet" }
             }
         }
-   }
+    }
 }
