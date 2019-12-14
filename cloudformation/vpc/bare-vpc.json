@@ -10,7 +10,7 @@
                 "InstanceTenancy" : "dedicated",
                 "Tags" : [
 					{"Key" : "Name", "Value" : "templateVPC"},
-					{"Key" : "Github", "Value" : "al7819"},
+					{"Key" : "Github", "Value" : "zerodf"},
 					{"Key" : "Stack Overflow", "Value" : "ZeroDF"} ]
             }
         }
