@@ -1,0 +1,20 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: VPC for sysops study.
+Resources:
+  templateVPC:
+    Type: 'AWS::EC2::VPC'
+    Properties:
+      CidrBlock: 10.0.0.0/16
+      EnableDnsSupport: true
+      EnableDnsHostnames: true
+      InstanceTenancy: dedicated
+      Tags:
+        - Key: Name
+          Value: templateVPC
+        - Key: Github
+          Value: zerodf
+        - Key: Stack Overflow
+          Value: Zerodf
+        - Key: Template Language
+          Value: YAML
+
