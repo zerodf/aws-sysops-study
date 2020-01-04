@@ -1,0 +1,105 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: VPC for sysops study.
+Parameters:
+  KeyName:
+    Description: A key I manually generated for this excercise
+    Type: AWS::EC2::KeyPair::KeyName
+Resources:
+  templateVPC:
+    Type: 'AWS::EC2::VPC'
+    Properties:
+      CidrBlock: 10.0.0.0/16
+      EnableDnsSupport: true
+      EnableDnsHostnames: true
+      InstanceTenancy: default
+      Tags:
+        - Key: Name
+          Value: templateVPC
+        - Key: Github
+          Value: zerodf
+        - Key: Stack Overflow
+          Value: Zerodf
+        - Key: Template Language
+          Value: YAML
+  publicSubnet:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId:
+        Ref: templateVPC
+      AvailabilityZone: us-east-1c
+      CidrBlock: 10.0.16.0/20
+      MapPublicIpOnLaunch: True
+  SSHSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      VpcId:
+        Ref: templateVPC
+      GroupDescription: Enable SSH access via port 22
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+      Tags:
+        - Key: Name
+          Value: SSHSG
+  templateInternetGateway:
+    Type: AWS::EC2::InternetGateway
+    Properties:
+      Tags:
+        - Key: Name
+          Value: templateVPCIGW
+  AttachGateway:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      VpcId:
+        Ref: templateVPC
+      InternetGatewayId:
+        Ref: templateInternetGateway
+  templateRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId:
+        Ref: templateVPC
+      Tags:
+        - Key: Name
+          Value: defaultRT
+  defaultRoute:
+    Type: AWS::EC2::Route
+    Properties:
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId:
+        Ref: templateInternetGateway
+      RouteTableId:
+        Ref: templateRouteTable
+  defaultRouteTablePublicSubnetAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId:
+        Ref: templateRouteTable
+      SubnetId:
+        Ref: publicSubnet
+  myEC2Instance:
+    Type: AWS::EC2::Instance
+    Metadata:
+      AWS::CloudFormation::Init:
+        GetData:
+          commands: "wget -O ~/trees.csv https://data.cityofnewyork.us/api/views/5rq2-4hqu/rows.csv?accessType=DOWNLOAD"
+    Properties:
+      ImageId: ami-00eb20669e0990cb4
+      InstanceType: t2.micro
+      SubnetId:
+        Ref: publicSubnet
+      KeyName:
+        Ref: KeyName
+      SecurityGroupIds:
+        - Ref: SSHSecurityGroup
+      Monitoring: True
+      UserData:
+        'Fn::Base64': 
+          !Sub |
+            #!/bin/bash
+            /usr/bin/wget -O /tmp/trees.csv https://data.cityofnewyork.us/api/views/5rq2-4hqu/rows.csv?accessType=DOWNLOAD
+      Tags:
+        - Key: Name
+          Value: MonitoringEnabled
