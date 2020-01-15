@@ -83,8 +83,14 @@ Resources:
     Type: AWS::EC2::Instance
     Metadata:
       AWS::CloudFormation::Init:
-        GetData:
-          commands: "wget -O ~/trees.csv https://data.cityofnewyork.us/api/views/5rq2-4hqu/rows.csv?accessType=DOWNLOAD"
+        config:
+          commands: 
+            GetData: 
+              command: "/usr/bin/wget -O /tmp/trees.csv https://data.cityofnewyork.us/api/views/5rq2-4hqu/rows.csv?accessType=DOWNLOAD"
+              cwd: "~"
+            WriteHome:
+              command: "date > createdon.txt"
+              cwd: "/home/ec2-user/"
     Properties:
       ImageId: ami-00eb20669e0990cb4
       InstanceType: t2.micro
@@ -95,11 +101,20 @@ Resources:
       SecurityGroupIds:
         - Ref: SSHSecurityGroup
       Monitoring: True
-      UserData:
-        'Fn::Base64': 
-          !Sub |
-            #!/bin/bash
-            /usr/bin/wget -O /tmp/trees.csv https://data.cityofnewyork.us/api/views/5rq2-4hqu/rows.csv?accessType=DOWNLOAD
+      UserData: !Base64 
+        'Fn::Join':
+          - ''
+          - - |
+              #!/bin/bash -xe
+            - |
+              # Install the files and packages from the metadata
+            - '/opt/aws/bin/cfn-init -v '
+            - '         --stack '
+            - !Ref 'AWS::StackName'
+            - '         --resource myEC2Instance '
+            - '         --region '
+            - !Ref 'AWS::Region'
+            - |+
       Tags:
         - Key: Name
           Value: MonitoringEnabled
